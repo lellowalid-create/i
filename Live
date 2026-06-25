@@ -3,201 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isaad Matches - إسعاد ماتش</title>
-    
-    <!-- Video.js CSS -->
-    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+    <title>بث مباشر | isaad Live</title>
+    <!-- خط Cairo العربي -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-
+    <!-- مكتبة الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #0f0f0f;
-            color: white;
-            margin: 0;
-            padding: 0;
+        :root {
+            --accent-color: #f1c40f; /* الذهبي */
+            --bg-dark: #0a0a0a;
+            --panel-bg: #161616;
+            --text-main: #ffffff;
         }
 
-        /* Header */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
         header {
-            background-color: #1a1a1a;
-            padding: 20px;
+            width: 100%;
+            background: var(--panel-bg);
+            padding: 15px;
             text-align: center;
-            border-bottom: 2px solid #00ff88;
+            border-bottom: 2px solid var(--accent-color);
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         header h1 {
             margin: 0;
-            color: #00ff88;
-            font-size: 28px;
+            font-size: 22px;
+            color: var(--accent-color);
             text-transform: uppercase;
         }
 
-        /* Main Container */
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 10px;
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 20px;
+            padding: 0 10px;
         }
 
-        /* Video Player Wrapper */
-        .video-container {
-            position: relative;
+        /* حاوية الـ iframe اللي اشتغلت معاك */
+        .player-card {
             background: #000;
-            border-radius: 8px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,255,136,0.2);
-            margin-bottom: 30px;
-        }
-
-        .video-js {
-            width: 100% !important;
-            height: auto;
+            position: relative;
             aspect-ratio: 16 / 9;
-        }
-
-        /* Channel List Area */
-        .channel-list-title {
-            font-size: 20px;
-            margin-bottom: 15px;
-            border-right: 4px solid #00ff88;
-            padding-right: 10px;
-        }
-
-        .channels-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
-
-        .channel-card {
-            background: #1a1a1a;
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
             border: 1px solid #333;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
         }
 
-        .channel-card:hover {
-            background: #00ff88;
-            color: #000;
-            transform: translateY(-5px);
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
-        .channel-card.active {
-            border-color: #00ff88;
-            background: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-        }
-
-        .channel-card i {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-
-        footer {
-            text-align: center;
+        .stream-details {
+            margin-top: 20px;
+            background: var(--panel-bg);
             padding: 20px;
-            font-size: 14px;
-            color: #777;
+            border-radius: 15px;
+            text-align: center;
         }
 
-        /* Status Indicator */
-        .live-dot {
-            height: 10px;
-            width: 10px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 5px;
-            animation: blink 1s infinite;
+        .stream-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
-        @keyframes blink {
+        .live-label {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* قائمة المباريات */
+        .channel-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-ch {
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-ch.active {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        @keyframes pulse {
             0% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
+
+        footer { padding: 30px; color: #444; font-size: 12px; text-align: center; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Isaad Matches</h1>
+        <h1>ISAAD LIVE</h1>
     </header>
 
-    <div class="container">
-        
-        <!-- Player Section -->
-        <div class="video-container">
-            <video id="main-player" class="video-js vjs-big-play-centered vjs-theme-city" controls preload="auto" width="640" height="264">
-                <p class="vjs-no-js">
-                    لتشغيل الفيديو، يرجى تفعيل جافا سكريبت أو استخدام متصفح يدعم HTML5.
-                </p>
-            </video>
+    <div class="main-container">
+        <!-- منطقة الـ Iframe الموحدة -->
+        <div class="player-card">
+            <iframe 
+                id="livePlayer"
+                src="https://majed-koora.co/stream.php?channel=chche93&file=stream.m3u8" 
+                allowfullscreen="true" 
+                scrolling="no">
+            </iframe>
         </div>
 
-        <!-- Channels Section -->
-        <div class="channel-list-title">
-            <span class="live-dot"></span> قائمة القنوات المباشرة
-        </div>
-
-        <div class="channels-grid">
-            <!-- Channel 1 -->
-            <div class="channel-card" onclick="playChannel('https://table.houseinventer.com/pdf/AzMjD2IyADQPb2tLfQ/index.m3u8', this)">
-                <strong>Isaad Max 1</strong>
+        <div class="stream-details">
+            <div class="stream-title">
+                <span class="live-label">بث مباشر</span>
+                <span id="chName">المكسيك ضد التشيك</span>
             </div>
 
-            <!-- Channel 2 -->
-            <div class="channel-card" onclick="playChannel('http://185.202.236.109/bein/tracks-v1a1/mono.ts.m3u8', this)">
-                <strong>Isaad Max 2</strong>
+            <!-- الأزرار -->
+            <div class="channel-buttons">
+                <!-- مباراة 1 -->
+                <button class="btn-ch active" onclick="changeCh('https://majed-koora.co/stream.php?channel=chche93&file=stream.m3u8', 'المكسيك ضد التشيك', this)">
+                    <span>المكسيك ضد التشيك</span>
+                    <i class="fas fa-play-circle"></i>
+                </button>
+                
+                <!-- مباراة 2 (نفس طريقة المكسيك بالظبط) -->
+                <button class="btn-ch" onclick="changeCh('https://3.bb1.dpdns.org/hls/0/stream.m3u8', 'كوريا ضد جنوب افريقيا', this)">
+                    <span>كوريا ضد جنوب افريقيا</span>
+                    <i class="fas fa-play-circle"></i>
+                </button>
             </div>
-            
-            <!-- يمكنك إضافة المزيد من القنوات هنا بنفس الطريقة -->
         </div>
-
     </div>
 
-    <footer>
-        &copy; 2024 جميع الحقوق محفوظة لـ Isaad Matches
-    </footer>
+    <footer>جميع الحقوق محفوظة © 2026 لـ isaad Live</footer>
 
-    <!-- Video.js Scripts -->
-    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
-    
     <script>
-        // تهيئة المشغل
-        var player = videojs('main-player');
-
-        // وظيفة تغيير القناة
-        function playChannel(url, element) {
-            // تغيير رابط الفيديو
-            player.src({
-                src: url,
-                type: 'application/x-mpegURL'
-            });
-
-            // تشغيل الفيديو تلقائياً
-            player.play();
-
-            // تحديث الشكل (Active Class)
-            const cards = document.querySelectorAll('.channel-card');
-            cards.forEach(card => card.classList.remove('active'));
-            element.classList.add('active');
-
-            // التمرير للاعلى لمشاهدة الفيديو (اختياري)
+        function changeCh(url, name, btn) {
+            // تحديث رابط الـ Iframe فقط
+            document.getElementById('livePlayer').src = url;
+            // تحديث الاسم
+            document.getElementById('chName').innerText = name;
+            // تحديث الأزرار
+            document.querySelectorAll('.btn-ch').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // تشغيل القناة الأولى تلقائياً عند فتح الموقع
-        window.onload = function() {
-            const firstChannel = document.querySelector('.channel-card');
-            playChannel('http://185.202.236.109/Beinsport01001/tracks-v1a1/mono.ts.m3u8', firstChannel);
-        };
     </script>
+
 </body>
 </html>

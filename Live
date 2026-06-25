@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بث مباشر | isaad Live</title>
+    <title>isaad Live | البث المباشر</title>
     <!-- خط Cairo العربي -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <!-- مكتبة الأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- مكتبة تشغيل الروابط المباشرة (عشان رابط كوريا يشتغل) -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
         :root {
-            --accent-color: #f1c40f; /* الذهبي */
+            --accent-color: #f1c40f; /* اللون الذهبي */
             --bg-dark: #0a0a0a;
             --panel-bg: #161616;
             --text-main: #ffffff;
@@ -20,119 +22,63 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            margin: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Cairo', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0; background-color: var(--bg-dark); color: var(--text-main);
+            font-family: 'Cairo', sans-serif; display: flex; flex-direction: column;
+            align-items: center; min-height: 100vh;
         }
 
         header {
-            width: 100%;
-            background: var(--panel-bg);
-            padding: 15px;
-            text-align: center;
-            border-bottom: 2px solid var(--accent-color);
+            width: 100%; background: var(--panel-bg); padding: 15px;
+            text-align: center; border-bottom: 2px solid var(--accent-color);
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-            color: var(--accent-color);
-            text-transform: uppercase;
-        }
+        header h1 { margin: 0; font-size: 22px; color: var(--accent-color); text-transform: uppercase; }
 
-        .main-container {
-            width: 100%;
-            max-width: 900px;
-            margin-top: 20px;
-            padding: 0 10px;
-        }
+        .main-container { width: 100%; max-width: 900px; margin-top: 20px; padding: 0 10px; }
 
-        /* حاوية الـ iframe اللي اشتغلت معاك */
+        /* حاوية المشغل الاحترافية */
         .player-card {
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            aspect-ratio: 16 / 9;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
-            border: 1px solid #333;
+            background: #000; border-radius: 15px; overflow: hidden; position: relative;
+            aspect-ratio: 16 / 9; box-shadow: 0 0 25px rgba(241, 196, 15, 0.2); border: 1px solid #333;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        /* المشغلات */
+        #iframePlayer, #videoPlayer {
+            width: 100%; height: 100%; border: none; display: none;
         }
 
         .stream-details {
-            margin-top: 20px;
-            background: var(--panel-bg);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
+            margin-top: 20px; background: var(--panel-bg); padding: 20px;
+            border-radius: 15px; text-align: center;
         }
 
         .stream-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            font-size: 18px; font-weight: 700; margin-bottom: 15px;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
 
         .live-label {
-            background: #e74c3c;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 5px;
-            font-size: 11px;
-            animation: pulse 1.5s infinite;
+            background: #e74c3c; color: white; padding: 2px 10px; border-radius: 5px;
+            font-size: 11px; animation: pulse 1.5s infinite;
         }
 
-        /* قائمة المباريات */
+        /* أزرار المباريات */
         .channel-buttons {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 10px;
+            display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 10px;
         }
 
         .btn-ch {
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #333;
-            background: #222;
-            color: white;
-            cursor: pointer;
-            font-family: 'Cairo';
-            font-weight: bold;
-            transition: 0.3s;
-            font-size: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px; border-radius: 12px; border: 1px solid #333; background: #222;
+            color: white; cursor: pointer; font-family: 'Cairo'; font-weight: bold;
+            transition: 0.3s; font-size: 15px; display: flex; justify-content: space-between; align-items: center;
         }
 
-        .btn-ch.active {
-            background: var(--accent-color);
-            color: #000;
-            border-color: var(--accent-color);
-        }
+        .btn-ch.active { background: var(--accent-color); color: #000; border-color: var(--accent-color); }
+        .btn-ch i { color: var(--accent-color); }
+        .btn-ch.active i { color: #000; }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         footer { padding: 30px; color: #444; font-size: 12px; text-align: center; }
     </style>
 </head>
@@ -143,32 +89,29 @@
     </header>
 
     <div class="main-container">
-        <!-- منطقة الـ Iframe الموحدة -->
+        <!-- منطقة المشغل الذكي -->
         <div class="player-card">
-            <iframe 
-                id="livePlayer"
-                src="https://majed-koora.co/stream.php?channel=chche93&file=stream.m3u8" 
-                allowfullscreen="true" 
-                scrolling="no">
-            </iframe>
+            <!-- مشغل المكسيك (Iframe) -->
+            <iframe id="iframePlayer" allowfullscreen="true" scrolling="no"></iframe>
+            <!-- مشغل كوريا (Video) -->
+            <video id="videoPlayer" controls autoplay playsinline></video>
         </div>
 
         <div class="stream-details">
             <div class="stream-title">
                 <span class="live-label">بث مباشر</span>
-                <span id="chName">المكسيك ضد التشيك</span>
+                <span id="chName">جاري التحميل...</span>
             </div>
 
-            <!-- الأزرار -->
             <div class="channel-buttons">
-                <!-- مباراة 1 -->
-                <button class="btn-ch active" onclick="changeCh('https://majed-koora.co/stream.php?channel=chche93&file=stream.m3u8', 'المكسيك ضد التشيك', this)">
+                <!-- مباراة المكسيك (طريقة الـ iframe) -->
+                <button class="btn-ch active" onclick="playMatch('iframe', 'https://majed-koora.co/stream.php?channel=chche93&file=stream.m3u8', 'المكسيك ضد التشيك', this)">
                     <span>المكسيك ضد التشيك</span>
                     <i class="fas fa-play-circle"></i>
                 </button>
                 
-                <!-- مباراة 2 (نفس طريقة المكسيك بالظبط) -->
-                <button class="btn-ch" onclick="changeCh('https://3.bb1.dpdns.org/hls/0/stream.m3u8', 'كوريا ضد جنوب افريقيا', this)">
+                <!-- مباراة كوريا (طريقة الـ m3u8 المباشرة) -->
+                <button class="btn-ch" onclick="playMatch('hls', 'https://3.bb1.dpdns.org/hls/0/stream.m3u8', 'كوريا ضد جنوب افريقيا', this)">
                     <span>كوريا ضد جنوب افريقيا</span>
                     <i class="fas fa-play-circle"></i>
                 </button>
@@ -176,21 +119,49 @@
         </div>
     </div>
 
-    <footer>جميع الحقوق محفوظة © 2026 لـ isaad Live</footer>
+    <footer>جميع الحقوق محفوظة © 2024 لـ isaad Live</footer>
 
     <script>
-        function changeCh(url, name, btn) {
-            // تحديث رابط الـ Iframe فقط
-            document.getElementById('livePlayer').src = url;
-            // تحديث الاسم
+        const iframe = document.getElementById('iframePlayer');
+        const video = document.getElementById('videoPlayer');
+        const hls = new Hls();
+
+        function playMatch(type, url, name, btn) {
             document.getElementById('chName').innerText = name;
-            // تحديث الأزرار
             document.querySelectorAll('.btn-ch').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
+            if (type === 'iframe') {
+                // تفعيل وضع الـ Iframe (زي المكسيك)
+                video.style.display = 'none';
+                video.pause();
+                iframe.style.display = 'block';
+                iframe.src = url;
+            } else {
+                // تفعيل وضع الـ HLS (زي كوريا)
+                iframe.style.display = 'none';
+                iframe.src = '';
+                video.style.display = 'block';
+                
+                if (Hls.isSupported()) {
+                    hls.destroy(); // تنظيف قديم
+                    const newHls = new Hls();
+                    newHls.loadSource(url);
+                    newHls.attachMedia(video);
+                    newHls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = url;
+                    video.play();
+                }
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    </script>
 
+        // تشغيل المباراة الأولى تلقائياً عند فتح الصفحة
+        window.onload = function() {
+            const firstBtn = document.querySelector('.btn-ch');
+            playMatch('iframe', 'https://majed-koora.co/stream.php?channel=chche93&file=stream.m3u8', 'المكسيك ضد التشيك', firstBtn);
+        };
+    </script>
 </body>
 </html>
